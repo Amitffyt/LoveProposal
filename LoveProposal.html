@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Do You Love Me?</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+<style>
+  body {
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #loveContainer, #questionContainer, #messageContainer {
+    display: none;
+    animation: fadeIn 1s ease-in-out;
+  }
+  button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 20px;
+    background: #ff4081;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    outline: none;
+  }
+  button:hover {
+    background: #ff1c7e;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  #noButton {
+    position: absolute;
+  }
+  #loveAnimation {
+    display: none;
+    font-size: 30px;
+    animation: heartBeat 2s infinite;
+  }
+  @keyframes heartBeat {
+    0%, 100% { transform: scale(1); color: white; }
+    50% { transform: scale(1.3); color: #ff1c7e; }
+  }
+</style>
+</head>
+<body>
+<div id="nameContainer">
+  <h1>What's Your Name?</h1>
+  <input type="text" id="nameInput" placeholder="Enter Your Name">
+  <button onclick="startLove()">Submit</button>
+</div>
+
+<div id="questionContainer">
+  <h1 id="question">Do You Love Me?</h1>
+  <button onclick="yesClicked()">Yes</button>
+  <button id="noButton" onclick="noClicked()">No</button>
+</div>
+
+<div id="loveAnimation">
+  ❤️ You are my soulmate ❤️<br>
+  💖 You are my heart 💖<br>
+  💕 I will always be there for you 💕
+  <div id="messageContainer">
+    <h2>Do you want to say anything?</h2>
+    <textarea id="messageInput" placeholder="Write your message here..."></textarea><br>
+    <button onclick="sendMessage()">Send Message</button>
+  </div>
+</div>
+
+<script>
+function startLove() {
+  let name = document.getElementById("nameInput").value;
+  if (name.trim() !== "") {
+    document.getElementById("nameContainer").style.display = "none";
+    document.getElementById("questionContainer").style.display = "block";
+  } else {
+    alert("Please enter your name");
+  }
+}
+
+function yesClicked() {
+  document.getElementById("questionContainer").style.display = "none";
+  document.getElementById("loveAnimation").style.display = "block";
+  document.getElementById("messageContainer").style.display = "block";
+}
+
+let clickCount = 0;
+function noClicked() {
+  clickCount++;
+  if (clickCount === 1) {
+    document.getElementById("question").innerText = "Soch le acche se 😏";
+  } else if (clickCount === 2) {
+    document.getElementById("question").innerText = "Man ja yaar 🥺";
+  } else {
+    let button = document.getElementById("noButton");
+    let x = Math.random() * (window.innerWidth - button.offsetWidth);
+    let y = Math.random() * (window.innerHeight - button.offsetHeight);
+    button.style.left = `${x}px`;
+    button.style.top = `${y}px`;
+  }
+}
+
+function sendMessage() {
+  let message = document.getElementById("messageInput").value;
+  if (message.trim() !== "") {
+    fetch("https://api.emailjs.com/api/v1.0/email/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        service_id: "service_xxxxxx", 
+        template_id: "template_xxxxxx", 
+        user_id: "user_xxxxxx", 
+        template_params: {
+          message: message,
+          to_email: "amitkumaryadavy55@gmail.com"
+        }
+      })
+    }).then(response => {
+      if (response.ok) {
+        alert("Your message has been sent!");
+      } else {
+        alert("Failed to send the message. Try again later.");
+      }
+    });
+  } else {
+    alert("Please write something before sending.");
+  }
+}
+</script>
+</body>
+</html>
